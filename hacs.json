@@ -1,0 +1,6 @@
+{
+  "name": "Qwen3 TTS",
+  "render_readme": true,
+  "homeassistant": "2024.1.0",
+  "iot_class": "Local Polling"
+}

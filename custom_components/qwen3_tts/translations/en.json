@@ -1,0 +1,37 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configure Qwen3 TTS",
+        "description": "Connect to local Qwen3 TTS server",
+        "data": {
+          "host": "Host",
+          "port": "Port",
+          "speed": "Default Speed (0.5-2.0)"
+        },
+        "data_description": {
+          "host": "IP address or hostname of Qwen3 TTS server (e.g., 192.168.1.100 or localhost)",
+          "port": "Qwen3 TTS server port (default: 7860)",
+          "speed": "Default speech speed multiplier, 1.0 is normal speed"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot connect to Qwen3 TTS server, please check the host and port",
+      "unknown": "Unknown error, please check logs for details"
+    },
+    "abort": {
+      "already_configured": "This server is already configured"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Qwen3 TTS Options",
+        "data": {
+          "speed": "Default Speed (0.5-2.0)"
+        }
+      }
+    }
+  }
+}

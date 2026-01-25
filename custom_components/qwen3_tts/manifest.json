@@ -1,0 +1,13 @@
+{
+  "domain": "qwen3_tts",
+  "name": "Qwen3 TTS",
+  "codeowners": ["@nichwang88"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/nichwang88/ha-qwen3-tts",
+  "homeassistant": "2024.1.0",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/nichwang88/ha-qwen3-tts/issues",
+  "requirements": ["aiohttp>=3.8.0"],
+  "version": "1.0.0"
+}

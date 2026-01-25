@@ -1,0 +1,31 @@
+"""Constants for the Qwen3 TTS integration."""
+from homeassistant.const import CONF_HOST, CONF_PORT
+
+DOMAIN = "qwen3_tts"
+
+# Default values
+DEFAULT_HOST = "localhost"
+DEFAULT_PORT = 7860
+DEFAULT_SPEED = 1.0
+
+# Configuration keys
+CONF_SPEED = "speed"
+CONF_SPEAKER = "speaker"
+
+# Supported languages (Qwen3-TTS supports 10 languages)
+SUPPORT_LANGUAGES = [
+    "zh",  # Chinese
+    "en",  # English
+    "ja",  # Japanese
+    "ko",  # Korean
+    "de",  # German
+    "fr",  # French
+    "ru",  # Russian
+    "pt",  # Portuguese
+    "es",  # Spanish
+    "it",  # Italian
+]
+
+# Speed range
+MIN_SPEED = 0.5
+MAX_SPEED = 2.0
