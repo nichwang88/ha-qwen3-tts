@@ -54,7 +54,9 @@
 3. 搜索 "**Qwen3 TTS**"
 4. 输入配置信息：
    - **主机地址**: Qwen3 TTS 服务器的 IP 地址（例如：`192.168.1.100` 或 `localhost`）
-   - **端口**: 服务器端口（默认：`7860`）
+   - **端口**: 服务器端口
+     - MLX-Audio 版本（推荐）: `7861`
+     - Docker 版本: `7860`
    - **默认语速**: 0.5-2.0（默认：`1.0`）
 5. 点击 **提交**
 
@@ -157,7 +159,44 @@ automation:
 
 如果还没有部署 Qwen3 TTS 服务器，请按以下步骤操作：
 
-#### 使用 Docker（推荐）
+#### 使用 MLX-Audio（Apple Silicon 推荐，29 倍加速！）
+
+**性能对比**:
+- Docker CPU 版本: 短文本 39 秒，长文本 66 秒
+- MLX-Audio GPU 版本: **短文本 1.34 秒，长文本 6.96 秒**（**29 倍加速**！）
+
+**系统要求**: Apple Silicon Mac (M1/M2/M3/M4)
+
+1. 安装依赖：
+   ```bash
+   python3.10 -m venv mlx-venv
+   source mlx-venv/bin/activate
+   pip install mlx mlx-audio fastapi uvicorn soundfile numpy aiofiles python-multipart
+   ```
+
+2. 下载服务器代码：
+   ```bash
+   git clone https://github.com/nichwang88/ha-qwen3-tts.git
+   cd ha-qwen3-tts
+   ```
+
+3. 启动服务（端口 7861）：
+   ```bash
+   python mlx-server.py
+   ```
+
+4. 验证服务：
+   ```bash
+   curl http://localhost:7861/health
+   # 应该显示: "metal_gpu": true
+   ```
+
+**配置开机自启**（可选）:
+创建 `~/Library/LaunchAgents/com.qwen3tts.mlx.plist`，参见 [MLX 部署指南](https://github.com/nichwang88/ha-qwen3-tts/blob/main/docs/MLX_DEPLOYMENT.md)
+
+#### 使用 Docker（通用方案）
+
+**性能**: 短文本 ~39 秒，长文本 ~66 秒（CPU only）
 
 1. 下载部署文件：
    ```bash
@@ -165,7 +204,7 @@ automation:
    cd qwen3-tts-docker
    ```
 
-2. 启动服务：
+2. 启动服务（端口 7860）：
    ```bash
    docker compose up -d
    ```

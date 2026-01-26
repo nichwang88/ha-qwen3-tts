@@ -122,12 +122,19 @@ class Qwen3TTSEntity(TextToSpeechEntity):
                 )
             else:
                 url = f"{self._base_url}/api/tts"
-                params = {"text": message, "speed": speed}
+                # MLX-Audio version requires language and speaker parameters
+                params = {
+                    "text": message,
+                    "speed": speed,
+                    "language": "Chinese",
+                    "speaker": "Vivian"
+                }
                 _LOGGER.debug(
                     "Requesting TTS: %s (speed: %.2f)", message[:50], speed
                 )
 
-            async with asyncio.timeout(30):
+            # MLX-Audio version is much faster, 10 seconds is sufficient
+            async with asyncio.timeout(10):
                 async with self._session.post(url, params=params) as response:
                     if response.status != 200:
                         error_text = await response.text()

@@ -5,7 +5,7 @@ DOMAIN = "qwen3_tts"
 
 # Default values
 DEFAULT_HOST = "localhost"
-DEFAULT_PORT = 7860
+DEFAULT_PORT = 7861  # MLX-Audio version port (7860 was Docker version)
 DEFAULT_SPEED = 1.0
 
 # Configuration keys
