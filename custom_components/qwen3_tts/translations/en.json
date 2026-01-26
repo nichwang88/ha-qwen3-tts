@@ -11,7 +11,7 @@
         },
         "data_description": {
           "host": "IP address or hostname of Qwen3 TTS server (e.g., 192.168.1.100 or localhost)",
-          "port": "Qwen3 TTS server port (default: 7860)",
+          "port": "Qwen3 TTS server port (MLX: 7861, Docker: 7860)",
           "speed": "Default speech speed multiplier, 1.0 is normal speed"
         }
       }
@@ -28,10 +28,24 @@
     "step": {
       "init": {
         "title": "Qwen3 TTS Options",
+        "description": "Modify Qwen3 TTS integration configuration",
         "data": {
-          "speed": "Default Speed (0.5-2.0)"
+          "host": "Host",
+          "port": "Port",
+          "speed": "Default Speed (0.5-2.0)",
+          "speaker": "Default Speaker (optional)"
+        },
+        "data_description": {
+          "host": "IP address of Qwen3 TTS server",
+          "port": "Qwen3 TTS server port (MLX: 7861, Docker: 7860)",
+          "speed": "Default speech speed multiplier, 1.0 is normal speed",
+          "speaker": "Default speaker name (leave empty to use Vivian)"
         }
       }
+    },
+    "error": {
+      "cannot_connect": "Cannot connect to Qwen3 TTS server, please check the host and port",
+      "unknown": "Unknown error, please check logs for details"
     }
   }
 }

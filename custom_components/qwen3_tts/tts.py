@@ -43,11 +43,12 @@ async def async_setup_entry(
     base_url = hass.data[DOMAIN][config_entry.entry_id]["base_url"]
     session = hass.data[DOMAIN][config_entry.entry_id]["session"]
 
-    # Get default speed from config entry
+    # Get defaults from config entry
     default_speed = config_entry.data.get(CONF_SPEED, DEFAULT_SPEED)
+    default_speaker = config_entry.data.get(CONF_SPEAKER, "")
 
     async_add_entities(
-        [Qwen3TTSEntity(hass, base_url, session, default_speed, config_entry)]
+        [Qwen3TTSEntity(hass, base_url, session, default_speed, default_speaker, config_entry)]
     )
 
 
@@ -60,6 +61,7 @@ class Qwen3TTSEntity(TextToSpeechEntity):
         base_url: str,
         session: aiohttp.ClientSession,
         default_speed: float,
+        default_speaker: str,
         config_entry: ConfigEntry,
     ) -> None:
         """Initialize Qwen3 TTS provider."""
@@ -67,6 +69,7 @@ class Qwen3TTSEntity(TextToSpeechEntity):
         self._base_url = base_url
         self._session = session
         self._default_speed = default_speed
+        self._default_speaker = default_speaker
         self._config_entry = config_entry
         self._attr_name = "Qwen3 TTS"
         self._attr_unique_id = f"{DOMAIN}_{config_entry.entry_id}"
@@ -89,14 +92,18 @@ class Qwen3TTSEntity(TextToSpeechEntity):
     @property
     def default_options(self) -> dict[str, Any]:
         """Return default options."""
-        return {CONF_SPEED: self._default_speed}
+        options = {CONF_SPEED: self._default_speed}
+        if self._default_speaker:
+            options[CONF_SPEAKER] = self._default_speaker
+        return options
 
     async def async_get_tts_audio(
         self, message: str, language: str, options: dict[str, Any]
     ) -> TtsAudioType:
         """Load TTS from Qwen3 TTS server."""
         speed = options.get(CONF_SPEED, self._default_speed)
-        speaker = options.get(CONF_SPEAKER)
+        # Use speaker from options, fall back to default speaker, or use Vivian as final fallback
+        speaker = options.get(CONF_SPEAKER) or self._default_speaker or "Vivian"
 
         # Validate speed
         if not MIN_SPEED <= speed <= MAX_SPEED:
@@ -110,28 +117,20 @@ class Qwen3TTSEntity(TextToSpeechEntity):
             speed = self._default_speed
 
         try:
-            # Choose endpoint based on whether a speaker is specified
-            if speaker:
-                url = f"{self._base_url}/api/tts_to_speaker"
-                params = {"text": message, "speaker": speaker, "speed": speed}
-                _LOGGER.debug(
-                    "Requesting TTS with speaker '%s': %s (speed: %.2f)",
-                    speaker,
-                    message[:50],
-                    speed,
-                )
-            else:
-                url = f"{self._base_url}/api/tts"
-                # MLX-Audio version requires language and speaker parameters
-                params = {
-                    "text": message,
-                    "speed": speed,
-                    "language": "Chinese",
-                    "speaker": "Vivian"
-                }
-                _LOGGER.debug(
-                    "Requesting TTS: %s (speed: %.2f)", message[:50], speed
-                )
+            # Always use the same endpoint with language and speaker parameters
+            url = f"{self._base_url}/api/tts"
+            params = {
+                "text": message,
+                "speed": speed,
+                "language": "Chinese",
+                "speaker": speaker
+            }
+            _LOGGER.debug(
+                "Requesting TTS: %s (speaker: %s, speed: %.2f)",
+                message[:50],
+                speaker,
+                speed,
+            )
 
             # MLX-Audio version is much faster, 10 seconds is sufficient
             async with asyncio.timeout(10):

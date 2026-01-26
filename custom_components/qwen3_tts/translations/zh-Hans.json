@@ -11,7 +11,7 @@
         },
         "data_description": {
           "host": "Qwen3 TTS 服务器的 IP 地址或主机名（例如：192.168.1.100 或 localhost）",
-          "port": "Qwen3 TTS 服务器端口（默认：7860）",
+          "port": "Qwen3 TTS 服务器端口（MLX: 7861, Docker: 7860）",
           "speed": "默认语速倍率，1.0 为正常速度"
         }
       }
@@ -28,10 +28,24 @@
     "step": {
       "init": {
         "title": "Qwen3 TTS 选项",
+        "description": "修改 Qwen3 TTS 集成的配置参数",
         "data": {
-          "speed": "默认语速（0.5-2.0）"
+          "host": "主机地址",
+          "port": "端口",
+          "speed": "默认语速（0.5-2.0）",
+          "speaker": "默认音色（可选）"
+        },
+        "data_description": {
+          "host": "Qwen3 TTS 服务器的 IP 地址",
+          "port": "Qwen3 TTS 服务器端口（MLX: 7861, Docker: 7860）",
+          "speed": "默认语速倍率，1.0 为正常速度",
+          "speaker": "默认使用的音色名称（留空则使用 Vivian）"
         }
       }
+    },
+    "error": {
+      "cannot_connect": "无法连接到 Qwen3 TTS 服务器，请检查地址和端口是否正确",
+      "unknown": "未知错误，请查看日志获取详细信息"
     }
   }
 }
