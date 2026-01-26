@@ -113,17 +113,13 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     @staticmethod
     def async_get_options_flow(
         config_entry: config_entries.ConfigEntry,
-    ) -> OptionsFlowHandler:
+    ) -> config_entries.OptionsFlow:
         """Get the options flow for this handler."""
-        return OptionsFlowHandler(config_entry)
+        return OptionsFlowHandler()
 
 
 class OptionsFlowHandler(config_entries.OptionsFlow):
     """Handle options flow for Qwen3 TTS."""
-
-    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
-        """Initialize options flow."""
-        self.config_entry = config_entry
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
@@ -133,16 +129,16 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
 
         if user_input is not None:
             # Validate connection if host or port changed
-            if (
-                user_input.get(CONF_HOST) != self.config_entry.data.get(CONF_HOST)
-                or user_input.get(CONF_PORT) != self.config_entry.data.get(CONF_PORT)
-            ):
+            host_changed = user_input.get(CONF_HOST) != self.config_entry.data.get(CONF_HOST)
+            port_changed = user_input.get(CONF_PORT) != self.config_entry.data.get(CONF_PORT)
+
+            if host_changed or port_changed:
                 try:
                     await validate_input(self.hass, user_input)
                 except CannotConnect:
                     errors["base"] = "cannot_connect"
                 except Exception:  # pylint: disable=broad-except
-                    _LOGGER.exception("Unexpected exception")
+                    _LOGGER.exception("Unexpected exception in options flow validation")
                     errors["base"] = "unknown"
 
             if not errors:
