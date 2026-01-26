@@ -19,10 +19,14 @@ from .const import (
     DEFAULT_HOST,
     DEFAULT_PORT,
     DEFAULT_SPEED,
+    DEFAULT_TIMEOUT,
     CONF_SPEED,
     CONF_SPEAKER,
+    CONF_TIMEOUT,
     MIN_SPEED,
     MAX_SPEED,
+    MIN_TIMEOUT,
+    MAX_TIMEOUT,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -33,6 +37,9 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
         vol.Required(CONF_PORT, default=DEFAULT_PORT): int,
         vol.Optional(CONF_SPEED, default=DEFAULT_SPEED): vol.All(
             vol.Coerce(float), vol.Range(min=MIN_SPEED, max=MAX_SPEED)
+        ),
+        vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT): vol.All(
+            vol.Coerce(int), vol.Range(min=MIN_TIMEOUT, max=MAX_TIMEOUT)
         ),
     }
 )
@@ -154,6 +161,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
         current_port = self.config_entry.data.get(CONF_PORT, DEFAULT_PORT)
         current_speed = self.config_entry.data.get(CONF_SPEED, DEFAULT_SPEED)
         current_speaker = self.config_entry.data.get(CONF_SPEAKER, "")
+        current_timeout = self.config_entry.data.get(CONF_TIMEOUT, DEFAULT_TIMEOUT)
 
         return self.async_show_form(
             step_id="init",
@@ -165,6 +173,9 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                         vol.Coerce(float), vol.Range(min=MIN_SPEED, max=MAX_SPEED)
                     ),
                     vol.Optional(CONF_SPEAKER, default=current_speaker): str,
+                    vol.Optional(CONF_TIMEOUT, default=current_timeout): vol.All(
+                        vol.Coerce(int), vol.Range(min=MIN_TIMEOUT, max=MAX_TIMEOUT)
+                    ),
                 }
             ),
             errors=errors,

@@ -7,12 +7,14 @@
         "data": {
           "host": "主机地址",
           "port": "端口",
-          "speed": "默认语速（0.5-2.0）"
+          "speed": "默认语速（0.5-2.0）",
+          "timeout": "基础超时时间（秒）"
         },
         "data_description": {
           "host": "Qwen3 TTS 服务器的 IP 地址或主机名（例如：192.168.1.100 或 localhost）",
           "port": "Qwen3 TTS 服务器端口（MLX: 7861, Docker: 7860）",
-          "speed": "默认语速倍率，1.0 为正常速度"
+          "speed": "默认语速倍率，1.0 为正常速度",
+          "timeout": "TTS 请求的基础超时时间（10-300 秒），会根据文本长度自动增加。默认 60 秒"
         }
       }
     },
@@ -33,13 +35,15 @@
           "host": "主机地址",
           "port": "端口",
           "speed": "默认语速（0.5-2.0）",
-          "speaker": "默认音色（可选）"
+          "speaker": "默认音色（可选）",
+          "timeout": "基础超时时间（秒）"
         },
         "data_description": {
           "host": "Qwen3 TTS 服务器的 IP 地址",
           "port": "Qwen3 TTS 服务器端口（MLX: 7861, Docker: 7860）",
           "speed": "默认语速倍率，1.0 为正常速度",
-          "speaker": "默认使用的音色名称（留空则使用 Vivian）"
+          "speaker": "默认使用的音色名称（留空则使用 Vivian）",
+          "timeout": "TTS 请求的基础超时时间（10-300 秒）。实际超时 = 基础超时 + (文本长度 × 0.1 秒)，最大 300 秒。默认 60 秒"
         }
       }
     },
