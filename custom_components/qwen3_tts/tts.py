@@ -118,10 +118,20 @@ class Qwen3TTSEntity(TextToSpeechEntity):
         - 1000 chars = 60 + 100 = 160 seconds
         - 3000 chars = 60 + 300 = 300 seconds (capped at max)
         """
+        # Re-read base_timeout from config to ensure we use the latest value
+        base_timeout = self._config_entry.data.get(CONF_TIMEOUT, DEFAULT_TIMEOUT)
         char_factor = 0.1  # 1 second per 10 characters
 
-        calculated = self._base_timeout + (text_length * char_factor)
+        calculated = base_timeout + (text_length * char_factor)
         timeout = min(calculated, MAX_TIMEOUT)
+
+        _LOGGER.debug(
+            "Timeout calculation: base=%ds, text_length=%d chars, calculated=%ds, final=%ds",
+            base_timeout,
+            text_length,
+            int(calculated),
+            int(timeout)
+        )
 
         return timeout
 
