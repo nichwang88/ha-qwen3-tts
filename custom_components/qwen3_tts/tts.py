@@ -19,6 +19,7 @@ from homeassistant.const import CONF_HOST, CONF_PORT
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers import callback
 import homeassistant.helpers.config_validation as cv
 
 from .const import (
@@ -79,6 +80,7 @@ class Qwen3TTSEntity(TextToSpeechEntity):
         self._config_entry = config_entry
         self._attr_name = "Qwen3 TTS"
         self._attr_unique_id = f"{DOMAIN}_{config_entry.entry_id}"
+        self._supported_voices_cache: dict[str, list[str] | None] = {}
 
     @property
     def default_language(self) -> str:
@@ -143,6 +145,12 @@ class Qwen3TTSEntity(TextToSpeechEntity):
         # Use speaker from options, fall back to default speaker, or use Vivian as final fallback
         speaker = options.get(CONF_SPEAKER) or self._default_speaker or "Vivian"
 
+
+        # Update supported voices cache if not already cached for this language
+        if language not in self._supported_voices_cache:
+            speakers = await self.async_get_speakers()
+            self._supported_voices_cache[language] = speakers
+            _LOGGER.debug("Cached voices for language %s: %s", language, speakers)
         # Validate speed
         if not MIN_SPEED <= speed <= MAX_SPEED:
             _LOGGER.warning(
@@ -236,3 +244,12 @@ class Qwen3TTSEntity(TextToSpeechEntity):
         except (asyncio.TimeoutError, aiohttp.ClientError) as err:
             _LOGGER.warning("Error fetching speakers list: %s", err)
             return None
+
+    @callback
+    def async_get_supported_voices(self, language: str) -> list[str] | None:
+        """Return a list of supported voices for a language."""
+        # Return cached voices for this language
+        # If not cached yet, return None and cache will be populated on first TTS request
+        voices = self._supported_voices_cache.get(language)
+        _LOGGER.debug("Getting supported voices for %s: %s", language, voices)
+        return voices
