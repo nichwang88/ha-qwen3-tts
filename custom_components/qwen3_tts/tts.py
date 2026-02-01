@@ -19,7 +19,7 @@ from homeassistant.const import CONF_HOST, CONF_PORT
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers import callback
+from homeassistant.core import callback
 import homeassistant.helpers.config_validation as cv
 
 from .const import (
